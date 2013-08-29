@@ -49,13 +49,20 @@ Sub CreateReport()
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     Desc = Range("E2:E" & TotalRows)
 
+    'Try to find item part numbers in the description field
+    ' i = Current row on worksheet
+    ' j = Current string in description
     For i = 2 To TotalRows
+        'Desc starts at row 2
+        'If there is only 1 row data Part is a single dimensional array,
+        'otherwise it is multidimensional
         If TotalRows > 2 Then
             Part = Split(Desc(i - 1, 1), " ")
         Else
             Part = Split(Desc, " ")
         End If
 
+        'Skip errors here because if the vlookup fails an error will be throw.
         On Error Resume Next
         For j = 0 To UBound(Part)
             If Lookup = "" Then
@@ -139,12 +146,9 @@ Sub AddReportFormulas()
 
 
     Sheets("Ship Log").Select
-
     TotalRows = ActiveSheet.UsedRange.Rows.Count
-
     ColQtyInvoiced = FindColumn("Qty Invoiced")
     ColTotalCost = FindColumn("Total Cost")
-
     RecWescoAddr = Cells(2, FindColumn("Qty Rec (WESCO)")).Address(False, False)
     UnitCostAddr = Cells(2, FindColumn("Unit Cost")).Address(False, False)
     QtyInvoicedAddr = Cells(2, ColQtyInvoiced).Address(False, False)
@@ -186,9 +190,8 @@ Sub AddKitLines()
 
     Sheets("Ship Log").Select
 
-    i = 1
-
     'Start at line 2 of Ship Log
+    i = 1
     Do While i <= Sheets("Ship Log").UsedRange.Rows.Count
         i = i + 1
         KitLnCount = 0
@@ -215,13 +218,13 @@ Sub AddKitLines()
                     For k = 1 To KitLnCount - 1
                         CurrentLine = j - KitLnCount + k
 
-                        'Skid #
+                        'Skid #, User filled field
                         KitBOM(k, 1) = ""
 
                         'Ticket/LN
                         KitBOM(k, 2) = Sheets("Ship Log").Range("B" & i).Value
 
-                        'Pckg Qty
+                        'Pckg Qty, User filled field
                         KitBOM(k, 3) = ""
 
                         'PO/LN
@@ -241,17 +244,19 @@ Sub AddKitLines()
                         'Qty Sent
                         KitBOM(k, 8) = Sheets("Kit BOM").Range("G" & CurrentLine).Value * Sheets("Ship Log").Range("H" & i).Value
 
-                        'Kit Qty
+                        'Kit Qty, Left blank because only kit components are being added
                         KitBOM(k, 9) = ""
                     Next
 
                     If KitLnCount > 0 Then
-                        'Application.CutCopyMode = False
-                        'i + 1 = line below the current kit
-                        'Subtract 2 from kit line count because the first line is the Kit SIM
-                        'and the last line is a special note denoting the end of the kit
+                        'i + 1 = line below the current kit, the array holds the kits components
+                        'Subtract 1 from kit line count because the first line is the Kit SIM
+                        'and was not read into the array
                         Rows(i + 1 & ":" & i + KitLnCount - 1).Insert
                         Range(Cells(i + 1, 1), Cells(i + KitLnCount - 1, 9)).Value = KitBOM
+                        
+                        'Add the number of lines inserted to 'i' so that when it increments
+                        'it will not select a kit component that was just inserted
                         i = i + KitLnCount - 1
                     End If
                     Exit For
@@ -260,6 +265,7 @@ Sub AddKitLines()
         End If
     Loop
 
+    'Qty Sent - Store as values since they were read in as strings from the array
     With Range(Cells(2, 8), Cells(Sheets("Ship Log").UsedRange.Rows.Count, 8))
         .Value = .Value
     End With
@@ -311,6 +317,10 @@ Sub FormatReport()
         .Font.Bold = True
     End With
 
+    'Insert a blank row between each kit and alternate
+    'kit colors between light blue / light purple
+    ' i - Keeps track of current row
+    ' j - Keeps track of current kit
     Do While i < TotalRows + j
         i = i + 1
         If Cells(i, ColKitQty).Value <> "" And i > 2 Then
@@ -321,32 +331,13 @@ Sub FormatReport()
         End If
 
         If j Mod 2 = 1 Then
+            'Light blue
             Range(Cells(i, 1), Cells(i, 9)).Interior.Color = 14994616
         ElseIf i > 1 Then
+            'Light purple
             Range(Cells(i, 1), Cells(i, 9)).Interior.Color = 14336204
         End If
     Loop
 
     ActiveSheet.UsedRange.Columns.AutoFit
 End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

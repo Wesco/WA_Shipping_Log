@@ -101,9 +101,16 @@ End Sub
 Sub Button2()
     Application.ScreenUpdating = False
     
+    'Import kit components
     AddKitLines
+    
+    'Add formulas for Qty Invoiced and Total Cost
     AddReportFormulas
+    
+    'Add formatting to the ship log
     FormatReport
+    
+    'Save and close
     MsgBox "Please save the shipping log to your computer.", vbOKOnly, "Macro Finished!"
     ExportReport
     ThisWorkbook.Close
@@ -111,12 +118,21 @@ Sub Button2()
     Application.ScreenUpdating = True
 End Sub
 
+'---------------------------------------------------------------------------------------
+' Proc : Clean
+' Date : 8/29/2013
+' Desc : Removes all data added at runtime
+'---------------------------------------------------------------------------------------
 Sub Clean()
     Dim PrevDispAlert As Boolean
+    Dim PrevActiveBook As Workbook
     Dim s As Worksheet
 
     PrevDispAlert = Application.DisplayAlerts
     Application.DisplayAlerts = False
+    
+    Set PrevActiveBook = ActiveWorkbook
+    ThisWorkbook.Activate
 
     For Each s In ThisWorkbook.Sheets
         If s.Name <> "Macro" Then
@@ -130,6 +146,7 @@ Sub Clean()
     Sheets("Macro").Select
     Range("C7").Select
 
+    PrevActiveBook.Activate
     Application.DisplayAlerts = PrevDispAlert
 End Sub
 
