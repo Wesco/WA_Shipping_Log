@@ -68,7 +68,7 @@ Sub Button1()
 
     'Move the cursor to the cell below the button that should be run next
     Sheets("Macro").Select
-    Range("C15").Select
+    Range("G7").Select
 
     'Go back to the sheet that may require user action
     Sheets("Ship Log").Select
