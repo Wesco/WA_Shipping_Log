@@ -140,12 +140,15 @@ Sub Button3()
 
     If PO <> 0 And StartLn <> 0 And EndLn <> 0 Then
         For i = StartLn To EndLn Step 10
-            ActiveSheet.UsedRange.AutoFilter Field, Criteria1
+            ActiveSheet.UsedRange.AutoFilter 3, "=" & PO & "/" & i
             Cells.Delete
             Rows(1).Insert
             Range(Cells(1, 1), Cells(1, TotalCols)).Value = ColHeaders
         Next
     End If
+    
+    Sheets("Macro").Select
+    Range("E14").Select
 End Sub
 
 '---------------------------------------------------------------------------------------

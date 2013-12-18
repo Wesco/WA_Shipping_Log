@@ -13,29 +13,25 @@ Sub CreateReport()
     Sheets("Ship Log").Select
     TotalRows = ActiveSheet.UsedRange.Rows.Count
 
-    'Skid #
-    Columns(1).Insert
-    Range("A1").Value = "Skid #"
-
     'PO/LN
-    Columns(2).Insert
-    Range("B1").Value = "PO/LN"
-    With Range("B2:B" & TotalRows)
-        .Formula = "=RIGHT(""000000"" & C2,6) & ""/"" & D2"
+    Columns(1).Insert
+    Range("A1").Value = "PO/LN"
+    With Range("A2:A" & TotalRows)
+        .Formula = "=RIGHT(""000000"" & B2,6) & ""/"" & C2"
         .NumberFormat = "@"
         .Value = .Value
     End With
-    Columns("C:D").Delete
+    Columns("B:C").Delete
 
     'Description
-    Columns(3).Insert
-    Range("C1").Value = "Description"
-    With Range("C2:C" & TotalRows)
+    Columns(2).Insert
+    Range("B1").Value = "Description"
+    With Range("B2:B" & TotalRows)
         .NumberFormat = "General"
-        .Formula = "=TRIM(D2)"
+        .Formula = "=TRIM(C2)"
         .Value = .Value
     End With
-    Range("D:D").Delete
+    Range("C:C").Delete
 
     'SIMs
     Columns("C:D").Insert
@@ -107,33 +103,14 @@ Sub CreateReport()
     Range("H1:H" & TotalRows).Copy Range("I1")
     Range("I1").Value = "Kit Qty"
 
-    Range("K1:Z1").Value = Array("Notes: Wesco to Workability", _
-                                 "Qty Rec (WA)", _
+    Range("K1:Z1").Value = Array("Qty Rec (WA)", _
                                  "Notes: Workability to Wesco", _
                                  "Qty (Production)", _
                                  "Notes (Production)", _
                                  "Skid # (WA-Shipping)", _
                                  "Pckg Qty (WA-Shipping)", _
                                  "QTY Sent (WA-Shipping)", _
-                                 "Notes", _
-                                 "Qty Rec (WESCO)", _
-                                 "Seq #", _
-                                 "Invoice #", _
-                                 "PO #", _
-                                 "Qty Invoiced", _
-                                 "Date", _
-                                 "Total Cost")
-
-    'Unit Cost
-    Columns(26).Insert
-    Range(Cells(1, 10), Cells(TotalRows, 10)).Cut Destination:=Range("Z1")
-    Range("Z1").Value = "Unit Cost"
-    With Range("Z1:Z" & TotalRows)
-        .NumberFormat = "$#,##0.00"
-        .Value = .Value
-    End With
-    Columns(10).Delete
-
+                                 "Notes")
 End Sub
 
 Sub AddReportFormulas()
