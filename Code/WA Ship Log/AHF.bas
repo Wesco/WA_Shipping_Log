@@ -130,6 +130,11 @@ Sub ExportCode()
             Case 3
                 FileName = codeFolder & comp.Name & ".frm"
                 comp.Export FileName
+            Case 100
+                If comp.Name = "ThisWorkbook" Then
+                    FileName = codeFolder & comp.Name & ".sht"
+                    comp.Export FileName
+                End If
         End Select
     Next
 End Sub

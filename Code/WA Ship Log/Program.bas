@@ -119,6 +119,22 @@ Sub Button2()
     Application.ScreenUpdating = True
 End Sub
 
+'Remove PO Lines
+Sub Button3()
+        Dim PO As String
+        Dim StartLn As Long
+        Dim EndLn As Long
+        
+        frmRemoveLines.Show
+        
+        PO = frmRemoveLines.PONumber
+        StartLn = frmRemoveLines.StartLine
+        EndLn = frmRemoveLines.EndLine
+        
+        
+        
+End Sub
+
 '---------------------------------------------------------------------------------------
 ' Proc : Clean
 ' Date : 8/29/2013

@@ -102,7 +102,7 @@ Sub CheckForUpdates(URL As String, LocalVer As String, Optional RepoName As Stri
     Ver = Replace(Ver, vbCr, "")
     RegEx.Pattern = "^[0-9]+\.[0-9]+\.[0-9]+$"
 
-    If RegEx.Test(Ver) Then
+    If RegEx.test(Ver) Then
         If Not Ver = LocalVer Then
             MsgBox Prompt:="An update is available. Please close the macro and get the latest version!", Title:="Update Available"
             If Not RepoName = "" Then
