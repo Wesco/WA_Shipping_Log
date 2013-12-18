@@ -1,6 +1,12 @@
 Attribute VB_Name = "AHF_Updater"
 Option Explicit
 
+'---------------------------------------------------------------------------------------
+' Name : Ver
+' Type : Enum
+' Date : 9/4/2013
+' Desc : Fractional version number names
+'---------------------------------------------------------------------------------------
 Private Enum Ver
     Major
     Minor
@@ -10,7 +16,7 @@ End Enum
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementMajor
 ' Date : 9/4/2013
-' Desc : Increments the macros major version number (major.minor.patch)
+' Desc : Interface for incrementing the macros major version number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementMajor()
     IncrementVer Major
@@ -19,7 +25,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementMinorVersion
 ' Date : 4/24/2013
-' Desc : Increments the macros minor version number (major.minor.patch)
+' Desc : Interface for incrementing the macros minor version number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementMinor()
     IncrementVer Minor
@@ -28,7 +34,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementPatch
 ' Date : 9/4/2013
-' Desc : Increments the macros patch number (major.minor.patch)
+' Desc : Interface for incrementing the macros patch version number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementPatch()
     IncrementVer Patch
@@ -37,7 +43,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementVer
 ' Date : 9/4/2013
-' Desc :
+' Desc : Increments the macros patch number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Private Sub IncrementVer(Version As Ver)
     Dim Path As String
@@ -84,28 +90,19 @@ End Sub
 ' Date : 4/24/2013
 ' Desc : Checks to see if the macro is up to date
 '---------------------------------------------------------------------------------------
-Sub CheckForUpdates(URL As String, Optional RepoName As String = "")
+Sub CheckForUpdates(URL As String, LocalVer As String, Optional RepoName As String = "")
     Dim Ver As Variant
-    Dim LocalVer As Variant
-    Dim Path As String
-    Dim LocalPath As String
-    Dim FileNum As Integer
     Dim RegEx As Variant
 
     Set RegEx = CreateObject("VBScript.RegExp")
+    
+    'Try to get the contents of the text file
     Ver = DownloadTextFile(URL)
-    Ver = Ver & vbCrLf
     Ver = Replace(Ver, vbLf, "")
     Ver = Replace(Ver, vbCr, "")
     RegEx.Pattern = "^[0-9]+\.[0-9]+\.[0-9]+$"
-    Path = GetWorkbookPath & "Version.txt"
-    FileNum = FreeFile
 
-    Open Path For Input As #FileNum
-    Line Input #FileNum, LocalVer
-    Close FileNum
-
-    If RegEx.test(Ver) Then
+    If RegEx.Test(Ver) Then
         If Not Ver = LocalVer Then
             MsgBox Prompt:="An update is available. Please close the macro and get the latest version!", Title:="Update Available"
             If Not RepoName = "" Then
@@ -141,4 +138,3 @@ Private Function DownloadTextFile(URL As String) As String
 
     DownloadTextFile = responseText
 End Function
-
