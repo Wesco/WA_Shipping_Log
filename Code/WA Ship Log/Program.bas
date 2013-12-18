@@ -76,11 +76,11 @@ Sub Button1()
     Range("A1").Select
 
     Application.ScreenUpdating = True
-    
+
     MsgBox "1. Verify that all lines have a SIM/PART number." & vbCrLf & _
            "2. Go to the 'Macro' sheet and click 'Import Kit Lines'" & vbCrLf & vbCrLf & _
            "NOTE: If the item is a Club Car part please email the PART/SIM to TReische@wesco.com"
-           
+
     Exit Sub
 
 Import_Error:
@@ -101,38 +101,51 @@ End Sub
 
 Sub Button2()
     Application.ScreenUpdating = False
-    
+
     'Import kit components
     AddKitLines
-    
+
     'Add formulas for Qty Invoiced and Total Cost
     AddReportFormulas
-    
+
     'Add formatting to the ship log
     FormatReport
-    
+
     'Save and close
     MsgBox "Please save the shipping log to your computer.", vbOKOnly, "Macro Finished!"
     ExportReport
     ThisWorkbook.Close
-    
+
     Application.ScreenUpdating = True
 End Sub
 
 'Remove PO Lines
 Sub Button3()
-        Dim PO As String
-        Dim StartLn As Long
-        Dim EndLn As Long
-        
-        frmRemoveLines.Show
-        
-        PO = frmRemoveLines.PONumber
-        StartLn = frmRemoveLines.StartLine
-        EndLn = frmRemoveLines.EndLine
-        
-        
-        
+    Dim ColHeaders As Variant
+    Dim TotalCols As Long
+    Dim PO As String
+    Dim StartLn As Long
+    Dim EndLn As Long
+    Dim i As Long
+    
+    Sheets("Ship Log").Select
+    TotalCols = ActiveSheet.UsedRange.Columns.Count
+    ColHeaders = Range(Cells(1, 1), Cells(1, TotalCols)).Value
+    
+    frmRemoveLines.Show
+
+    PO = frmRemoveLines.PONumber
+    StartLn = frmRemoveLines.StartLine
+    EndLn = frmRemoveLines.EndLine
+
+    If PO <> 0 And StartLn <> 0 And EndLn <> 0 Then
+        For i = StartLn To EndLn Step 10
+            ActiveSheet.UsedRange.AutoFilter Field, Criteria1
+            Cells.Delete
+            Rows(1).Insert
+            Range(Cells(1, 1), Cells(1, TotalCols)).Value = ColHeaders
+        Next
+    End If
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -147,7 +160,7 @@ Sub Clean()
 
     PrevDispAlert = Application.DisplayAlerts
     Application.DisplayAlerts = False
-    
+
     Set PrevActiveBook = ActiveWorkbook
     ThisWorkbook.Activate
 

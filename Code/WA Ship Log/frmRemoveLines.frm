@@ -28,9 +28,9 @@ End Sub
 
 Private Sub btnRemove_Click()
     On Error GoTo Type_Err
-    PONumber = CInt(txtPO)
-    StartLine = CInt(txtStartLn)
-    EndLine = CInt(txtEndLn)
+    PONumber = CLng(txtPO)
+    StartLine = CLng(txtStartLn)
+    EndLine = CLng(txtEndLn)
     On Error GoTo 0
 
     If StartLine > EndLine Then
@@ -39,6 +39,10 @@ Private Sub btnRemove_Click()
         MsgBox "The start line can not be less than or equal to zero."
     ElseIf PONumber <= 0 Then
         MsgBox "The PO number can not be less than or equal to zero."
+    ElseIf Not StartLine Mod 10 = 0 Then
+        MsgBox "The start line must be a multiple of ten."
+    ElseIf Not EndLine Mod 10 = 0 Then
+        MsgBox "The end line must be a multiple of ten."
     Else
         frmRemoveLines.Hide
     End If
@@ -48,5 +52,7 @@ Private Sub btnRemove_Click()
 Type_Err:
     If Err.Number = 13 Then
         MsgBox "Please make sure only numbers have been entered."
+    Else
+        Err.Raise Err.Number
     End If
 End Sub
