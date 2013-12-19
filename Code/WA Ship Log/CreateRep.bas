@@ -34,16 +34,16 @@ Sub CreateReport()
     Range("C:C").Delete
 
     'SIMs
-    Columns("C:D").Insert
-    Range("C1").Value = "SIM"
-    Range("D1").Value = "Part"
+    Columns("B:C").Insert
+    Range("B1").Value = "SIM"
+    Range("C1").Value = "Part"
     Sheets("Master").Select
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     LookupTable = Range(Cells(1, 1), Cells(TotalRows, 2))
 
     Sheets("Ship Log").Select
     TotalRows = ActiveSheet.UsedRange.Rows.Count
-    Desc = Range("E2:E" & TotalRows)
+    Desc = Range("D2:D" & TotalRows)
 
     'Try to find item part numbers in the description field
     ' i = Current row on worksheet
@@ -65,8 +65,8 @@ Sub CreateReport()
                 Lookup = WorksheetFunction.VLookup(Part(j), LookupTable, 2, False)
             End If
             If Lookup <> "" Then
-                Cells(i, 3).Value = Lookup
-                Cells(i, 4).Value = Part(j)
+                Cells(i, 2).Value = Lookup
+                Cells(i, 3).Value = Part(j)
                 Lookup = ""
                 Exit For
             End If
@@ -76,67 +76,28 @@ Sub CreateReport()
 
     'Remove Account lines
     For i = TotalRows To 1 Step -1
-        If InStr(Range("E" & i).Value, "ACCOUNT NO") Then
+        If InStr(Range("D" & i).Value, "ACCOUNT NO") Then
             Rows(i).Delete
         End If
     Next
     TotalRows = ActiveSheet.UsedRange.Rows.Count
 
     'Ticket #
-    Columns(2).Insert
-    Range("B1").Value = "Ticket/LN"
-    With Range("B2:B" & TotalRows)
-        .Formula = "=IF(TRIM(RIGHT(""000000"" & I2,6) & ""/"" & J2)=""/"","""",RIGHT(""000000"" & I2,6) & ""/"" & J2)"
+    Columns(1).Insert
+    Range("A1").Value = "Ticket/LN"
+    With Range("A2:A" & TotalRows)
+        .Formula = "=IF(TRIM(RIGHT(""000000"" & H2,6) & ""/"" & I2)=""/"","""",RIGHT(""000000"" & H2,6) & ""/"" & I2)"
         .Value = .Value
     End With
-    Columns("I:J").Delete
-
-    'Package Quantity
-    Columns(3).Insert
-    Range("C1").Value = "Pckg Qty"
+    Columns("G:I").Delete
 
     'Qty Sent
-    Range("H1").Value = "Qty Sent"
+    Range("F1").Value = "Qty Sent"
 
     'Kit Qty
-    Columns(9).Insert
-    Range("H1:H" & TotalRows).Copy Range("I1")
-    Range("I1").Value = "Kit Qty"
-
-    Range("K1:Z1").Value = Array("Qty Rec (WA)", _
-                                 "Notes: Workability to Wesco", _
-                                 "Qty (Production)", _
-                                 "Notes (Production)", _
-                                 "Skid # (WA-Shipping)", _
-                                 "Pckg Qty (WA-Shipping)", _
-                                 "QTY Sent (WA-Shipping)", _
-                                 "Notes")
-End Sub
-
-Sub AddReportFormulas()
-    Dim ColQtyInvoiced As Integer
-    Dim ColTotalCost As Integer
-    Dim RecWescoAddr As String
-    Dim UnitCostAddr As String
-    Dim QtyInvoicedAddr As String
-    Dim TotalRows As Long
-
-
-    Sheets("Ship Log").Select
-    TotalRows = ActiveSheet.UsedRange.Rows.Count
-    ColQtyInvoiced = FindColumn("Qty Invoiced")
-    ColTotalCost = FindColumn("Total Cost")
-    RecWescoAddr = Cells(2, FindColumn("Qty Rec (WESCO)")).Address(False, False)
-    UnitCostAddr = Cells(2, FindColumn("Unit Cost")).Address(False, False)
-    QtyInvoicedAddr = Cells(2, ColQtyInvoiced).Address(False, False)
-
-    'Qty Invoiced
-    Range(Cells(2, ColQtyInvoiced), Cells(TotalRows, ColQtyInvoiced)).Formula = _
-    "=IF(" & RecWescoAddr & "="""",""""," & RecWescoAddr & ")"
-
-    'Total Cost
-    Range(Cells(2, ColTotalCost), Cells(TotalRows, ColTotalCost)).Formula = _
-    "=IFERROR(IF(" & QtyInvoicedAddr & "*" & UnitCostAddr & "=0,""""," & QtyInvoicedAddr & "*" & UnitCostAddr & "),"""")"
+    Range("F1:F" & TotalRows).Copy Range("G1")
+    Range("G1").Value = "Kit Qty"
+    
 End Sub
 
 Sub AddKitLines()
@@ -172,7 +133,7 @@ Sub AddKitLines()
     Do While i <= Sheets("Ship Log").UsedRange.Rows.Count
         i = i + 1
         KitLnCount = 0
-        CurrentSIM = Sheets("Ship Log").Range("E" & i).Value
+        CurrentSIM = Sheets("Ship Log").Range("C" & i).Value
 
         'Check to see if the item is listed in the Kit BOM
         'If the item is not on the Kit BOM KitLookup is set to an empty string
@@ -190,39 +151,33 @@ Sub AddKitLines()
                 Else
                     'Subtract 2 from kit line count because the first line is the Kit SIM
                     'and the last line is a special note denoting the end of the kit
-                    ReDim KitBOM(1 To KitLnCount - 1, 1 To 9) As String
+                    ReDim KitBOM(1 To KitLnCount - 1, 1 To 7) As String
 
                     For k = 1 To KitLnCount - 1
                         CurrentLine = j - KitLnCount + k
 
-                        'Skid #, User filled field
-                        KitBOM(k, 1) = ""
-
                         'Ticket/LN
+                        KitBOM(k, 1) = Sheets("Ship Log").Range("A" & i).Value
+                        
+                        'PO/LN
                         KitBOM(k, 2) = Sheets("Ship Log").Range("B" & i).Value
 
-                        'Pckg Qty, User filled field
-                        KitBOM(k, 3) = ""
-
-                        'PO/LN
-                        KitBOM(k, 4) = Sheets("Ship Log").Range("D" & i).Value
-
                         'SIM
-                        KitBOM(k, 5) = Sheets("Kit BOM").Range("F" & CurrentLine).Value
+                        KitBOM(k, 3) = Sheets("Kit BOM").Range("F" & CurrentLine).Value
 
                         'Part
                         On Error GoTo PartNotFound
-                        KitBOM(k, 6) = WorksheetFunction.VLookup(KitBOM(k, 5), MasterTable, 2, False)
+                        KitBOM(k, 4) = WorksheetFunction.VLookup(KitBOM(k, 3), MasterTable, 2, False)
                         On Error GoTo 0
 
                         'Description
-                        KitBOM(k, 7) = Sheets("Kit BOM").Range("I" & CurrentLine).Value
+                        KitBOM(k, 5) = Sheets("Kit BOM").Range("I" & CurrentLine).Value
 
                         'Qty Sent
-                        KitBOM(k, 8) = Sheets("Kit BOM").Range("G" & CurrentLine).Value * Sheets("Ship Log").Range("H" & i).Value
+                        KitBOM(k, 6) = Sheets("Kit BOM").Range("G" & CurrentLine).Value * Sheets("Ship Log").Range("F" & i).Value
 
                         'Kit Qty, Left blank because only kit components are being added
-                        KitBOM(k, 9) = ""
+                        KitBOM(k, 7) = ""
                     Next
 
                     If KitLnCount > 0 Then
@@ -230,7 +185,7 @@ Sub AddKitLines()
                         'Subtract 1 from kit line count because the first line is the Kit SIM
                         'and was not read into the array
                         Rows(i + 1 & ":" & i + KitLnCount - 1).Insert
-                        Range(Cells(i + 1, 1), Cells(i + KitLnCount - 1, 9)).Value = KitBOM
+                        Range(Cells(i + 1, 1), Cells(i + KitLnCount - 1, 7)).Value = KitBOM
                         
                         'Add the number of lines inserted to 'i' so that when it increments
                         'it will not select a kit component that was just inserted
@@ -243,7 +198,7 @@ Sub AddKitLines()
     Loop
 
     'Qty Sent - Store as values since they were read in as strings from the array
-    With Range(Cells(2, 8), Cells(Sheets("Ship Log").UsedRange.Rows.Count, 8))
+    With Range(Cells(2, 6), Cells(ActiveSheet.UsedRange.Rows.Count, 6))
         .Value = .Value
     End With
     ActiveSheet.UsedRange.Columns.AutoFit
@@ -272,24 +227,9 @@ Sub FormatReport()
     ColKitQty = FindColumn("Kit Qty")
 
     'Skid # - Notes: Wesco to Workability = Blue
-    Range("A1:J1").Interior.Color = 12419407
+    Range("A1:G1").Interior.Color = 12419407
 
-    'Qty Rec (WA) - Notes: Workability to Wesco = Purple
-    Range("K1:L1").Interior.Color = 10642560
-
-    'Qty - Notes = Orange
-    Range("M1:N1").Interior.Color = 4626167
-
-    'Skid # - Notes = Green
-    Range("O1:R1").Interior.Color = 5880731
-
-    'Qty Rec (WESCO) - Seq # = Blue
-    Range("S1:T1").Interior.Color = 12419407
-
-    'Invoice # - Total Cost = Red
-    Range("U1:Z1").Interior.Color = 5066944
-
-    With Range("A1:Z1")
+    With Range("A1:G1")
         .Font.Color = rgbWhite
         .Font.Bold = True
     End With
@@ -302,17 +242,17 @@ Sub FormatReport()
         i = i + 1
         If Cells(i, ColKitQty).Value <> "" And i > 2 Then
             Rows(i).Insert
-            Range(Cells(i, 1), Cells(i, 9)).ClearFormats
+            Range(Cells(i, 1), Cells(i, 7)).ClearFormats
             i = i + 1
             j = j + 1
         End If
 
         If j Mod 2 = 1 Then
             'Light blue
-            Range(Cells(i, 1), Cells(i, 9)).Interior.Color = 14994616
+            Range(Cells(i, 1), Cells(i, 7)).Interior.Color = 14994616
         ElseIf i > 1 Then
             'Light purple
-            Range(Cells(i, 1), Cells(i, 9)).Interior.Color = 14336204
+            Range(Cells(i, 1), Cells(i, 7)).Interior.Color = 14336204
         End If
     Loop
 

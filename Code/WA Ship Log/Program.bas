@@ -105,9 +105,6 @@ Sub Button2()
     'Import kit components
     AddKitLines
 
-    'Add formulas for Qty Invoiced and Total Cost
-    AddReportFormulas
-
     'Add formatting to the ship log
     FormatReport
 
