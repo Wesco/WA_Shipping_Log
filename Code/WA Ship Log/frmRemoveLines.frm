@@ -20,6 +20,9 @@ Public StartLine As Long
 Public EndLine As Long
 
 Private Sub UserForm_Initialize()
+    PONumber = 0
+    StartLine = 0
+    EndLine = 0
     txtPO.Text = ""
     txtStartLn.Text = ""
     txtEndLn.Text = ""
