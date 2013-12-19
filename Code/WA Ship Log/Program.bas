@@ -2,6 +2,7 @@ Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "1.0.0"
 
+'Create Shipment
 Sub Button1()
     Dim TotalCols As Integer
     Dim TotalRows As Long
@@ -69,18 +70,9 @@ Sub Button1()
 
     'Move the cursor to the cell below the button that should be run next
     Sheets("Macro").Select
-    Range("G7").Select
-
-    'Go back to the sheet that may require user action
-    Sheets("Ship Log").Select
-    Range("A1").Select
+    Range("E14").Select
 
     Application.ScreenUpdating = True
-
-    MsgBox "1. Verify that all lines have a SIM/PART number." & vbCrLf & _
-           "2. Go to the 'Macro' sheet and click 'Import Kit Lines'" & vbCrLf & vbCrLf & _
-           "NOTE: If the item is a Club Car part please email the PART/SIM to TReische@wesco.com"
-
     Exit Sub
 
 Import_Error:
@@ -99,6 +91,7 @@ Import_Error:
 
 End Sub
 
+'Create Ship Log
 Sub Button2()
     Application.ScreenUpdating = False
 
@@ -116,7 +109,7 @@ Sub Button2()
     Application.ScreenUpdating = True
 End Sub
 
-'Remove PO Lines
+'Remove Lines
 Sub Button3()
     Dim ColHeaders As Variant
     Dim TotalCols As Long
@@ -137,7 +130,7 @@ Sub Button3()
 
     If PO <> 0 And StartLn <> 0 And EndLn <> 0 Then
         For i = StartLn To EndLn Step 10
-            ActiveSheet.UsedRange.AutoFilter 3, "=" & PO & "/" & i
+            ActiveSheet.UsedRange.AutoFilter 2, "=" & PO & "/" & i
             Cells.Delete
             Rows(1).Insert
             Range(Cells(1, 1), Cells(1, TotalCols)).Value = ColHeaders
@@ -145,7 +138,7 @@ Sub Button3()
     End If
     
     Sheets("Macro").Select
-    Range("E14").Select
+    Range("G7").Select
 End Sub
 
 '---------------------------------------------------------------------------------------
@@ -179,18 +172,3 @@ Sub Clean()
     PrevActiveBook.Activate
     Application.DisplayAlerts = PrevDispAlert
 End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
