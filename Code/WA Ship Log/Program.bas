@@ -27,7 +27,11 @@ Sub Button1()
     KitBOMImport
 
     'Prompt user for the number of POs on the shipment
-    NumOfPOs = CInt(InputBox("Number of POs on shipment", "PO Quantity"))
+    frmNumPOs.Show
+    NumOfPOs = frmNumPOs.NumPOs
+    If NumOfPOs = 0 Then
+        Err.Raise Errors.USER_INTERRUPT
+    End If
     On Error GoTo 0
 
     'Prompt user for PO numbers
@@ -82,6 +86,10 @@ Import_Error:
     ElseIf Err.Number = 6 Then
         MsgBox "The number entered was too large", vbOKOnly, "Error"
         Resume
+    ElseIf Err.Number = Errors.USER_INTERRUPT Then
+        MsgBox "PO entry canceled."
+        Clean
+        Application.ScreenUpdating = True
     Else
         MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure 'Button1' of module 'Program'"
         Clean
@@ -117,11 +125,11 @@ Sub Button3()
     Dim StartLn As Long
     Dim EndLn As Long
     Dim i As Long
-    
+
     Sheets("Ship Log").Select
     TotalCols = ActiveSheet.UsedRange.Columns.Count
     ColHeaders = Range(Cells(1, 1), Cells(1, TotalCols)).Value
-    
+
     frmRemoveLines.Show
 
     PO = frmRemoveLines.PONumber
@@ -136,7 +144,7 @@ Sub Button3()
             Range(Cells(1, 1), Cells(1, TotalCols)).Value = ColHeaders
         Next
     End If
-    
+
     Sheets("Macro").Select
     Range("G7").Select
 End Sub
