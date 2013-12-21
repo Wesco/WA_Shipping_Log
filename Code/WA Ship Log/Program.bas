@@ -1,13 +1,17 @@
 Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "2.0.0"
+Public NumOfPOs As Integer
+
+Sub Savethis()
+    ActiveWorkbook.SaveAs "C:\WA_Ship_Log.xlsm", xlOpenXMLWorkbookMacroEnabled
+End Sub
 
 'Create Shipment
 Sub Button1()
     Dim TotalCols As Integer
     Dim TotalRows As Long
     Dim ColHeaders() As Variant
-    Dim NumOfPOs As Integer
     Dim RowCount As Long
     Dim PO As String
     Dim i As Long
@@ -39,7 +43,12 @@ Sub Button1()
     Sheets("POR").Select
     ReDim POList(1 To NumOfPOs) As String
     For i = 1 To NumOfPOs
-        PO = InputBox("Enter PO #" & i, "PO Entry")
+        frmGetPO.Show
+        PO = frmGetPO.PO    'InputBox("Enter PO #" & i, "PO Entry")
+        If PO = 0 Then
+            Err.Raise Errors.USER_INTERRUPT
+        End If
+
         ActiveSheet.UsedRange.AutoFilter 3, "=" & PO, xlAnd
         RowCount = RowCount + 1
         ActiveSheet.UsedRange.Copy Destination:=Sheets("Ship Log").Range("A" & RowCount)

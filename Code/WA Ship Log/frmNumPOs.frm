@@ -30,8 +30,12 @@ Private Sub btnCancel_Click()
 End Sub
 
 Private Sub btnOk_Click()
-    If txtNumPOs = "" Then
+    If txtNumPOs.Value = "" Then
         MsgBox "You must enter a number."
+        txtNumPOs.SetFocus
+    ElseIf txtNumPOs.Value <= 0 Then
+        MsgBox "You must enter a value greater than zero."
+        txtNumPOs.Text = ""
         txtNumPOs.SetFocus
     Else
         On Error GoTo NumPO_Err
