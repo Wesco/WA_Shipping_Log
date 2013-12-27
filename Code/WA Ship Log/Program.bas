@@ -3,8 +3,13 @@ Option Explicit
 Public Const VersionNumber As String = "2.0.0"
 Public POCount As Integer
 
-'Create Shipment
-Sub Button1()
+
+'---------------------------------------------------------------------------------------
+' Proc : CreateShipment
+' Date : 12/27/2013
+' Desc : Gets all of the shipment data
+'---------------------------------------------------------------------------------------
+Sub CreateShipment()
     Dim NumOfPOs As Integer
     Dim TotalCols As Integer
     Dim TotalRows As Long
@@ -110,8 +115,12 @@ Import_Error:
     End If
 End Sub
 
-'Create Ship Log
-Sub Button2()
+'---------------------------------------------------------------------------------------
+' Proc : ShipLog
+' Date : 12/27/2013
+' Desc : Formats the shipping log and adds kit boms
+'---------------------------------------------------------------------------------------
+Sub ShipLog()
     Application.ScreenUpdating = False
 
     'Import kit components
@@ -128,8 +137,12 @@ Sub Button2()
     Application.ScreenUpdating = True
 End Sub
 
-'Remove Lines
-Sub Button3()
+'---------------------------------------------------------------------------------------
+' Proc : RemoveLines
+' Date : 12/27/2013
+' Desc : Removes line items from the shipment
+'---------------------------------------------------------------------------------------
+Sub RemoveLines()
     Dim ColHeaders As Variant
     Dim TotalCols As Long
     Dim PO As String
