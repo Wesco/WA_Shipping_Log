@@ -35,7 +35,7 @@ Private Sub btnOk_Click()
         On Error GoTo NumPO_Err
         PO = CLng(txtPO.Value)
         On Error GoTo 0
-        frmNumPOs.Hide
+        frmGetPO.Hide
     End If
 
     Exit Sub
