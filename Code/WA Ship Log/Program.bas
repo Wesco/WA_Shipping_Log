@@ -3,7 +3,6 @@ Option Explicit
 Public Const VersionNumber As String = "2.0.0"
 Public POCount As Integer
 
-
 '---------------------------------------------------------------------------------------
 ' Proc : CreateShipment
 ' Date : 12/27/2013
@@ -14,9 +13,11 @@ Sub CreateShipment()
     Dim TotalCols As Integer
     Dim TotalRows As Long
     Dim ColHeaders() As Variant
+    Dim POList() As Long
     Dim RowCount As Long
     Dim PO As String
     Dim i As Long
+    Dim j As Long
 
     Application.ScreenUpdating = False
     'Prompt user to import Purchase Order Report
@@ -40,10 +41,13 @@ Sub CreateShipment()
     End If
     On Error GoTo 0
 
+    'Dimension POList array
+    ReDim POList(1 To NumOfPOs) As Long
+
     'Prompt user for PO numbers
     'Copy the PO that was entered onto Ship Log
     Sheets("POR").Select
-    ReDim POList(1 To NumOfPOs) As String
+    ReDim POList(1 To NumOfPOs) As Long
     For i = 1 To NumOfPOs
         POCount = i
         frmGetPO.Show
@@ -56,6 +60,7 @@ Sub CreateShipment()
         End If
         On Error GoTo 0
 
+        POList(i) = PO
         ActiveSheet.UsedRange.AutoFilter 3, "=" & PO, xlAnd
         RowCount = RowCount + 1
         ActiveSheet.UsedRange.Copy Destination:=Sheets("Ship Log").Range("A" & RowCount)
@@ -84,7 +89,22 @@ Sub CreateShipment()
     'Add column headers
     Rows(1).Insert
     Range(Cells(1, 1), Cells(UBound(ColHeaders), UBound(ColHeaders, 2))) = ColHeaders
-
+    TotalRows = ActiveSheet.UsedRange.Rows.Count
+    TotalCols = ActiveSheet.UsedRange.Columns.Count
+    
+    'Check to see if all POs were found
+    For i = 1 To UBound(POList)
+        For j = 2 To TotalRows
+            If Range("A" & j).Value = POList(i) Then
+                Exit For
+            Else
+                If j = TotalRows Then
+                    MsgBox "PO # " & POList(i) & " could not be found."
+                End If
+            End If
+        Next
+    Next
+    
     'Create columns needed on report
     CreateReport
 
