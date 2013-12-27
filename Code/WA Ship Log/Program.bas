@@ -3,10 +3,6 @@ Option Explicit
 Public Const VersionNumber As String = "2.0.0"
 Public NumOfPOs As Integer
 
-Sub Savethis()
-    ActiveWorkbook.SaveAs "C:\WA_Ship_Log.xlsm", xlOpenXMLWorkbookMacroEnabled
-End Sub
-
 'Create Shipment
 Sub Button1()
     Dim TotalCols As Integer
