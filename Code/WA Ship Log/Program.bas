@@ -1,6 +1,7 @@
 Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "2.0.0"
+Public POCount As Integer
 
 'Create Shipment
 Sub Button1()
@@ -39,12 +40,16 @@ Sub Button1()
     Sheets("POR").Select
     ReDim POList(1 To NumOfPOs) As String
     For i = 1 To NumOfPOs
-        frmGetPO.POCount = i
+        POCount = i
         frmGetPO.Show
-        PO = frmGetPO.PO    'InputBox("Enter PO #" & i, "PO Entry")
+        PO = frmGetPO.PO
+        Unload frmGetPO
+
+        On Error GoTo Import_Error
         If PO = 0 Then
             Err.Raise Errors.USER_INTERRUPT
         End If
+        On Error GoTo 0
 
         ActiveSheet.UsedRange.AutoFilter 3, "=" & PO, xlAnd
         RowCount = RowCount + 1
@@ -96,13 +101,13 @@ Import_Error:
         MsgBox "PO entry canceled."
         Clean
         Application.ScreenUpdating = True
+        Exit Sub
     Else
         MsgBox "Error " & Err.Number & " (" & Err.Description & ") in procedure 'Button1' of module 'Program'"
         Clean
         Application.ScreenUpdating = True
         Exit Sub
     End If
-
 End Sub
 
 'Create Ship Log

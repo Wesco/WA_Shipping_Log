@@ -16,12 +16,12 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Public PO As Long
-Public POCount As Integer
 
 Private Sub UserForm_Initialize()
     lblPONum.Caption = "Enter PO# " & POCount
-    txtPO.Text = ""
+    txtPO.Value = ""
     txtPO.SetFocus
+    PO = 0
 End Sub
 
 Private Sub btnOk_Click()
@@ -37,6 +37,8 @@ Private Sub btnOk_Click()
         PO = CLng(txtPO.Value)
         On Error GoTo 0
         frmGetPO.Hide
+        txtPO.Text = ""
+        txtPO.SetFocus
     End If
 
     Exit Sub
@@ -51,4 +53,8 @@ NumPO_Err:
         txtPO.Text = ""
         txtPO.SetFocus
     End If
+End Sub
+
+Private Sub btnCancel_Click()
+    frmGetPO.Hide
 End Sub
