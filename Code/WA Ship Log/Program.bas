@@ -1,10 +1,10 @@
 Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "2.0.0"
-Public NumOfPOs As Integer
 
 'Create Shipment
 Sub Button1()
+    Dim NumOfPOs As Integer
     Dim TotalCols As Integer
     Dim TotalRows As Long
     Dim ColHeaders() As Variant
@@ -39,6 +39,7 @@ Sub Button1()
     Sheets("POR").Select
     ReDim POList(1 To NumOfPOs) As String
     For i = 1 To NumOfPOs
+        frmGetPO.POCount = i
         frmGetPO.Show
         PO = frmGetPO.PO    'InputBox("Enter PO #" & i, "PO Entry")
         If PO = 0 Then

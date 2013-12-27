@@ -16,9 +16,10 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Public PO As Long
+Public POCount As Integer
 
 Private Sub UserForm_Initialize()
-    lblPONum.Caption = "Enter PO# " & NumOfPOs
+    lblPONum.Caption = "Enter PO# " & POCount
     txtPO.Text = ""
     txtPO.SetFocus
 End Sub
