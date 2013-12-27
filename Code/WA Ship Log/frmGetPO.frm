@@ -15,6 +15,8 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Public PO As Long
+
 Private Sub UserForm_Initialize()
     lblPONum.Caption = "Enter PO# " & NumOfPOs
     txtPO.Text = ""
@@ -22,9 +24,30 @@ Private Sub UserForm_Initialize()
 End Sub
 
 Private Sub btnOk_Click()
+    If txtPO.Value = "" Then
+        MsgBox "You must enter a number."
+        txtPO.SetFocus
+    ElseIf txtPO.Value <= 0 Then
+        MsgBox "You must enter a value greater than zero."
+        txtPO.Text = ""
+        txtPO.SetFocus
+    Else
+        On Error GoTo NumPO_Err
+        PO = CLng(txtPO.Value)
+        On Error GoTo 0
+        frmNumPOs.Hide
+    End If
 
-End Sub
+    Exit Sub
 
-Private Sub UserForm_Click()
-
+NumPO_Err:
+    If Err.Number = 13 Then
+        MsgBox "You must enter a number."
+        txtPO.Text = ""
+        txtPO.SetFocus
+    ElseIf Err.Number = 6 Then
+        MsgBox "The number you entered was too large."
+        txtPO.Text = ""
+        txtPO.SetFocus
+    End If
 End Sub
