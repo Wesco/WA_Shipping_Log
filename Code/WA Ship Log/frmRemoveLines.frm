@@ -59,3 +59,16 @@ Type_Err:
         Err.Raise Err.Number
     End If
 End Sub
+
+Private Sub btnCancel_Click()
+    PONumber = 0
+    StartLine = 0
+    EndLine = 0
+    frmRemoveLines.Hide
+End Sub
+
+Private Sub UserForm_Terminate()
+    PONumber = 0
+    StartLine = 0
+    EndLine = 0
+End Sub

@@ -57,3 +57,7 @@ NumPO_Err:
         txtNumPOs.SetFocus
     End If
 End Sub
+
+Private Sub UserForm_Terminate()
+    NumPOs = 0
+End Sub

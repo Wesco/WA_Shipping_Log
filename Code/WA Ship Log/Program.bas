@@ -182,6 +182,8 @@ Sub RemoveLines()
     PO = frmRemoveLines.PONumber
     StartLn = frmRemoveLines.StartLine
     EndLn = frmRemoveLines.EndLine
+    
+    Unload frmRemoveLines
 
     If PO <> 0 And StartLn <> 0 And EndLn <> 0 Then
         For i = StartLn To EndLn Step 10

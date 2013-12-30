@@ -56,5 +56,10 @@ NumPO_Err:
 End Sub
 
 Private Sub btnCancel_Click()
+    PO = 0
     frmGetPO.Hide
+End Sub
+
+Private Sub UserForm_Terminate()
+    PO = 0
 End Sub
