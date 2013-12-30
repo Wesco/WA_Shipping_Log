@@ -18,9 +18,9 @@ Option Explicit
 Public NumPOs As Integer
 
 Private Sub UserForm_Initialize()
-    NumPOs = 0
+    txtNumPOs.Value = ""
     txtNumPOs.SetFocus
-    txtNumPOs.Text = ""
+    NumPOs = 0
 End Sub
 
 Private Sub btnCancel_Click()

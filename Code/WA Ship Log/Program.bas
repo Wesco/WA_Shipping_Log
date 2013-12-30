@@ -20,6 +20,8 @@ Sub CreateShipment()
     Dim j As Long
 
     Application.ScreenUpdating = False
+    Clean
+    
     'Prompt user to import Purchase Order Report
     On Error GoTo Import_Error
     PORImport
@@ -36,6 +38,7 @@ Sub CreateShipment()
     'Prompt user for the number of POs on the shipment
     frmNumPOs.Show
     NumOfPOs = frmNumPOs.NumPOs
+    Unload frmNumPOs
     If NumOfPOs = 0 Then
         Err.Raise Errors.USER_INTERRUPT
     End If
@@ -123,7 +126,7 @@ Import_Error:
         MsgBox "The number entered was too large", vbOKOnly, "Error"
         Resume
     ElseIf Err.Number = Errors.USER_INTERRUPT Then
-        MsgBox "PO entry canceled."
+        MsgBox "Macro canceled by user."
         Clean
         Application.ScreenUpdating = True
         Exit Sub
@@ -140,7 +143,7 @@ End Sub
 ' Date : 12/27/2013
 ' Desc : Formats the shipping log and adds kit boms
 '---------------------------------------------------------------------------------------
-Sub ShipLog()
+Sub CreateShipLog()
     Application.ScreenUpdating = False
 
     'Import kit components
