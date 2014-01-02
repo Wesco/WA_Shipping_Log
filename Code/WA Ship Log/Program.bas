@@ -1,6 +1,6 @@
 Attribute VB_Name = "Program"
 Option Explicit
-Public Const VersionNumber As String = "2.0.1"
+Public Const VersionNumber As String = "2.0.2"
 Public POCount As Integer
 
 '---------------------------------------------------------------------------------------
