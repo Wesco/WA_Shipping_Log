@@ -107,6 +107,8 @@ Sub CheckForUpdates(URL As String, LocalVer As String, Optional RepoName As Stri
             MsgBox Prompt:="An update is available. Please close the macro and get the latest version!", Title:="Update Available"
             If Not RepoName = "" Then
                 Shell "C:\Program Files\Internet Explorer\iexplore.exe http://github.com/Wesco/" & RepoName & "/releases/", vbMaximizedFocus
+                ThisWorkbook.Saved = True
+                ThisWorkbook.Close
             End If
         End If
     End If
