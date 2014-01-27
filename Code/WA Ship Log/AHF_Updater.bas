@@ -1,22 +1,26 @@
 Attribute VB_Name = "AHF_Updater"
 Option Explicit
 
-'---------------------------------------------------------------------------------------
-' Name : Ver
-' Type : Enum
-' Date : 9/4/2013
-' Desc : Fractional version number names
-'---------------------------------------------------------------------------------------
 Private Enum Ver
     Major
     Minor
     Patch
 End Enum
 
+Private Declare Function ShellExecute _
+                          Lib "shell32.dll" Alias "ShellExecuteA" ( _
+                              ByVal hWnd As Long, _
+                              ByVal Operation As String, _
+                              ByVal FileName As String, _
+                              Optional ByVal Parameters As String, _
+                              Optional ByVal Directory As String, _
+                              Optional ByVal WindowStyle As Long = vbMaximizedFocus _
+                            ) As Long
+
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementMajor
 ' Date : 9/4/2013
-' Desc : Interface for incrementing the macros major version number (major.minor.patch)
+' Desc : Increments the macros major version number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementMajor()
     IncrementVer Major
@@ -25,7 +29,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementMinorVersion
 ' Date : 4/24/2013
-' Desc : Interface for incrementing the macros minor version number (major.minor.patch)
+' Desc : Increments the macros minor version number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementMinor()
     IncrementVer Minor
@@ -34,7 +38,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementPatch
 ' Date : 9/4/2013
-' Desc : Interface for incrementing the macros patch version number (major.minor.patch)
+' Desc : Increments the macros patch number (major.minor.patch)
 '---------------------------------------------------------------------------------------
 Sub IncrementPatch()
     IncrementVer Patch
@@ -43,7 +47,7 @@ End Sub
 '---------------------------------------------------------------------------------------
 ' Proc : IncrementVer
 ' Date : 9/4/2013
-' Desc : Increments the macros patch number (major.minor.patch)
+' Desc :
 '---------------------------------------------------------------------------------------
 Private Sub IncrementVer(Version As Ver)
     Dim Path As String
@@ -90,26 +94,48 @@ End Sub
 ' Date : 4/24/2013
 ' Desc : Checks to see if the macro is up to date
 '---------------------------------------------------------------------------------------
-Sub CheckForUpdates(URL As String, LocalVer As String, Optional RepoName As String = "")
-    Dim Ver As Variant
+Sub CheckForUpdates(RepoName As String, LocalVer As String)
+    Dim RemoteVer As Variant
     Dim RegEx As Variant
+    Dim Result As Integer
 
+    On Error GoTo UPDATE_ERROR
     Set RegEx = CreateObject("VBScript.RegExp")
-    
+
     'Try to get the contents of the text file
-    Ver = DownloadTextFile(URL)
-    Ver = Replace(Ver, vbLf, "")
-    Ver = Replace(Ver, vbCr, "")
+    RemoteVer = DownloadTextFile("https://raw.github.com/Wesco/" & RepoName & "/master/Version.txt")
+    RemoteVer = Replace(RemoteVer, vbLf, "")
+    RemoteVer = Replace(RemoteVer, vbCr, "")
+
+    'Expression to verify the data retrieved is a version number
     RegEx.Pattern = "^[0-9]+\.[0-9]+\.[0-9]+$"
 
-    If RegEx.test(Ver) Then
-        If Not Ver = LocalVer Then
-            MsgBox Prompt:="An update is available. Please close the macro and get the latest version!", Title:="Update Available"
-            If Not RepoName = "" Then
-                Shell "C:\Program Files\Internet Explorer\iexplore.exe http://github.com/Wesco/" & RepoName & "/releases/", vbMaximizedFocus
+    If RegEx.Test(RemoteVer) Then
+        If Not RemoteVer = LocalVer Then
+            Result = MsgBox("An update is available. Would you like to download the latest version now?", vbYesNo, "Update Available")
+            If Result = vbYes Then
+                'Opens github release page in the default browser, maximised with focus by default
+                ShellExecute 0, "Open", "http://github.com/Wesco/" & RepoName & "/releases/"
                 ThisWorkbook.Saved = True
-                ThisWorkbook.Close
+                If Workbooks.Count = 1 Then
+                    Application.Quit
+                Else
+                    ThisWorkbook.Close
+                End If
             End If
+        End If
+    End If
+    On Error GoTo 0
+    Exit Sub
+
+UPDATE_ERROR:
+    If MsgBox("An error occured while checking for updates." & vbCrLf & vbCrLf & _
+              "Would you like to open the website to download the latest version?", vbYesNo) = vbYes Then
+        ShellExecute 0, "Open", "http://github.com/Wesco/" & RepoName & "/releases/"
+        If Workbooks.Count = 1 Then
+            Application.Quit
+        Else
+            ThisWorkbook.Close
         End If
     End If
 End Sub

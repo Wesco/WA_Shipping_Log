@@ -1,6 +1,7 @@
 Attribute VB_Name = "Program"
 Option Explicit
 Public Const VersionNumber As String = "2.0.3"
+Public Const RepositoryName As String = "WA_Shipping_Log"
 Public POCount As Integer
 
 '---------------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Sub CreateShipment()
 
     Application.ScreenUpdating = False
     Clean
-    
+
     'Prompt user to import Purchase Order Report
     On Error GoTo Import_Error
     PORImport
@@ -94,7 +95,7 @@ Sub CreateShipment()
     Range(Cells(1, 1), Cells(UBound(ColHeaders), UBound(ColHeaders, 2))) = ColHeaders
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     TotalCols = ActiveSheet.UsedRange.Columns.Count
-    
+
     'Check to see if all POs were found
     For i = 1 To UBound(POList)
         For j = 2 To TotalRows
@@ -107,7 +108,7 @@ Sub CreateShipment()
             End If
         Next
     Next
-    
+
     'Create columns needed on report
     CreateReport
 
@@ -182,7 +183,7 @@ Sub RemoveLines()
     PO = frmRemoveLines.PONumber
     StartLn = frmRemoveLines.StartLine
     EndLn = frmRemoveLines.EndLine
-    
+
     Unload frmRemoveLines
 
     If PO <> 0 And StartLn <> 0 And EndLn <> 0 Then
