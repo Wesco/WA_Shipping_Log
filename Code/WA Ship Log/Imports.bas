@@ -74,16 +74,16 @@ Sub KitBOMImport()
 
     'Copy column headers to the row directly above data
     Range(Cells(4, 1), Cells(4, TotalCols)).Value = Range(Cells(2, 1), Cells(2, TotalCols)).Value
-    
+
     'Remove superfluous rows above column headers
     Rows("1:3").Delete
-    
+
     'Remove quotes surrounding SIM numbers
     'Kit SIMs may contain additional spaces, by removing the surrounding quotes
     'these spaces are removed and SIMs get stored as numbers. This should not cause
     'any leading 0's to be lost because all kits begin with 9
     Range(Cells(2, 3), Cells(TotalRows, 3)).Replace "'", "", SearchOrder:=xlByRows
-    
+
     'Store SIMs as strings
     TotalRows = ActiveSheet.UsedRange.Rows.Count
     Columns(3).Insert
@@ -109,7 +109,7 @@ Sub KitBOMImport()
     ColHeaders = Range(Cells(1, 1), Cells(1, TotalCols))
     ActiveSheet.UsedRange.AutoFilter Field:=5, Criteria1:="<>J", Operator:=xlAnd, Criteria2:="<>I"
     Cells.Delete
-    
+
     'Add column headers back to the report
     Rows(1).Insert
     Range(Cells(1, 1), Cells(1, TotalCols)) = ColHeaders
@@ -119,50 +119,12 @@ Sub GapsImport()
     Dim TotalRows As Long
 
     'Import GAPs
-    ImportGaps
+    ImportGaps Sheets("Gaps").Range("A1"), True
 
     Sheets("Gaps").Select
     TotalRows = ActiveSheet.UsedRange.Rows.Count
-    
-    'Remove SIMs because they are stored as numbers
-    'and leading 0's have been lost, then add SIMs
-    'back by storing them as strings
-    With Range("A2:A" & TotalRows)
-        .ClearContents
-        .Formula = "=""=""""""&C2&D2&"""""""""
-        .Value = .Value
-    End With
 
     'Remove all columns except SIM & SIM Description
     Columns("G:CV").Delete
     Columns("B:E").Delete
 End Sub
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
