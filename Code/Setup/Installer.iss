@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "WA Shipping Log"
-#define MyAppVersion "2.0.4"
+#define MyAppVersion "2.0.5"
 #define MyAppPublisher "Wesco Distribution, Inc."
 #define MyAppURL "http://www.github.com/wesco"
 #define MyAppExeName "WA Ship Log.xlsm"

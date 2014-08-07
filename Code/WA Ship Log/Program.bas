@@ -1,6 +1,6 @@
 Attribute VB_Name = "Program"
 Option Explicit
-Public Const VersionNumber As String = "2.0.4"
+Public Const VersionNumber As String = "2.0.5"
 Public Const RepositoryName As String = "WA_Shipping_Log"
 Public POCount As Integer
 
